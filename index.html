@@ -1,0 +1,1265 @@
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Heart Failure GDMT Learning App</title>
+<style>
+:root {
+--primary: #1a5276;
+--primary-light: #2980b9;
+--accent: #e74c3c;
+--accent-soft: #fadbd8;
+--success: #27ae60;
+--success-soft: #d5f5e3;
+--warning: #f39c12;
+--warning-soft: #fdebd0;
+--bg: #f4f6f9;
+--card: #ffffff;
+--text: #2c3e50;
+--text-light: #7f8c8d;
+--border: #dce1e7;
+--radius: 12px;
+--shadow: 0 2px 12px rgba(0,0,0,0.08);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, sans-serif;
+background: var(--bg);
+color: var(--text);
+line-height: 1.6;
+min-height: 100vh;
+}
+header {
+background: linear-gradient(135deg, #1a5276 0%, #2980b9 100%);
+color: #fff;
+padding: 24px 20px 18px;
+text-align: center;
+position: sticky;
+top: 0;
+z-index: 100;
+box-shadow: 0 2px 16px rgba(0,0,0,0.15);
+}
+header h1 { font-size: 1.5rem; font-weight: 700; letter-spacing: -0.5px; }
+header p { font-size: 0.85rem; opacity: 0.85; margin-top: 4px; }
+.container { max-width: 1100px; margin: 0 auto; padding: 16px; }
+.nav-tabs {
+display: flex;
+flex-wrap: wrap;
+gap: 6px;
+margin: 16px 0;
+background: var(--card);
+padding: 8px;
+border-radius: var(--radius);
+box-shadow: var(--shadow);
+}
+.nav-tabs button {
+flex: 1;
+min-width: 110px;
+padding: 10px 14px;
+border: none;
+background: transparent;
+border-radius: 8px;
+font-size: 0.85rem;
+font-weight: 600;
+color: var(--text-light);
+cursor: pointer;
+transition: all 0.2s;
+}
+.nav-tabs button:hover { background: #eef2f7; color: var(--primary); }
+.nav-tabs button.active {
+background: var(--primary);
+color: #fff;
+box-shadow: 0 2px 8px rgba(26,82,118,0.3);
+}
+.section { display: none; animation: fadeIn 0.3s ease; }
+.section.active { display: block; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+.card {
+background: var(--card);
+border-radius: var(--radius);
+padding: 20px;
+margin-bottom: 16px;
+box-shadow: var(--shadow);
+border-left: 4px solid var(--primary-light);
+}
+.card.accent { border-left-color: var(--accent); }
+.card.success { border-left-color: var(--success); }
+.card.warning { border-left-color: var(--warning); }
+.card h2 {
+font-size: 1.15rem;
+color: var(--primary);
+margin-bottom: 10px;
+display: flex;
+align-items: center;
+gap: 8px;
+}
+.card h3 {
+font-size: 1rem;
+color: var(--text);
+margin: 14px 0 8px;
+}
+.badge {
+display: inline-block;
+padding: 2px 10px;
+border-radius: 20px;
+font-size: 0.72rem;
+font-weight: 700;
+text-transform: uppercase;
+letter-spacing: 0.5px;
+}
+.badge-1 { background: #d4efdf; color: #1e8449; }
+.badge-2a { background: #d6eaf8; color: #1a5276; }
+.badge-2b { background: #fdebd0; color: #b9770e; }
+.badge-3 { background: #fadbd8; color: #922b21; }
+table {
+width: 100%;
+border-collapse: collapse;
+margin: 12px 0;
+font-size: 0.88rem;
+}
+th, td {
+padding: 10px 12px;
+text-align: left;
+border-bottom: 1px solid var(--border);
+vertical-align: top;
+}
+th {
+background: #eef2f7;
+font-weight: 700;
+color: var(--primary);
+font-size: 0.8rem;
+text-transform: uppercase;
+letter-spacing: 0.4px;
+}
+tr:hover td { background: #f8fafc; }
+.pill {
+display: inline-block;
+padding: 3px 10px;
+border-radius: 20px;
+font-size: 0.78rem;
+font-weight: 600;
+margin: 2px;
+}
+.pill-green { background: #d5f5e3; color: #1e8449; }
+.pill-blue { background: #d6eaf8; color: #1a5276; }
+.pill-orange { background: #fdebd0; color: #b9770e; }
+.pill-red { background: #fadbd8; color: #922b21; }
+.pill-purple { background: #e8daef; color: #6c3483; }
+.interactive-box {
+background: #f8fafc;
+border: 2px dashed var(--border);
+border-radius: var(--radius);
+padding: 18px;
+margin: 12px 0;
+}
+.interactive-box h3 { color: var(--primary); margin-bottom: 12px; font-size: 0.95rem; }
+.drug-list { display: flex; flex-direction: column; gap: 8px; }
+.drug-item {
+display: flex;
+align-items: center;
+gap: 10px;
+padding: 10px 14px;
+background: #fff;
+border: 1px solid var(--border);
+border-radius: 8px;
+cursor: grab;
+transition: all 0.2s;
+user-select: none;
+}
+.drug-item:hover { border-color: var(--primary-light); box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+.drug-item.dragging { opacity: 0.5; border-style: dashed; }
+.drug-item .handle { color: var(--text-light); font-size: 1.1rem; cursor: grab; }
+.drug-item .label { flex: 1; font-weight: 600; font-size: 0.88rem; }
+.drug-item .status { font-size: 0.75rem; padding: 2px 8px; border-radius: 12px; }
+.drug-item .status.on { background: var(--success-soft); color: var(--success); }
+.drug-item .status.off { background: #eee; color: #999; }
+.btn {
+display: inline-block;
+padding: 10px 20px;
+border: none;
+border-radius: 8px;
+font-size: 0.88rem;
+font-weight: 700;
+cursor: pointer;
+transition: all 0.2s;
+margin: 4px 4px 4px 0;
+}
+.btn-primary { background: var(--primary); color: #fff; }
+.btn-primary:hover { background: #154360; }
+.btn-outline { background: #fff; color: var(--primary); border: 2px solid var(--primary); }
+.btn-outline:hover { background: #eef2f7; }
+.btn-success { background: var(--success); color: #fff; }
+.btn-success:hover { background: #1e8449; }
+.quiz-question { margin-bottom: 20px; }
+.quiz-question p { font-weight: 600; margin-bottom: 10px; font-size: 0.92rem; }
+.quiz-option {
+display: block;
+padding: 10px 14px;
+margin: 6px 0;
+background: #fff;
+border: 2px solid var(--border);
+border-radius: 8px;
+cursor: pointer;
+transition: all 0.2s;
+font-size: 0.88rem;
+}
+.quiz-option:hover { border-color: var(--primary-light); background: #f0f7ff; }
+.quiz-option.selected { border-color: var(--primary); background: #e8f4fd; }
+.quiz-option.correct { border-color: var(--success); background: var(--success-soft); }
+.quiz-option.incorrect { border-color: var(--accent); background: var(--accent-soft); }
+.quiz-option.disabled { pointer-events: none; opacity: 0.7; }
+.quiz-feedback {
+margin-top: 8px;
+padding: 10px 14px;
+border-radius: 8px;
+font-size: 0.85rem;
+display: none;
+}
+.quiz-feedback.show { display: block; }
+.quiz-feedback.correct { background: var(--success-soft); color: #1e8449; border-left: 3px solid var(--success); }
+.quiz-feedback.incorrect { background: var(--accent-soft); color: #922b21; border-left: 3px solid var(--accent); }
+.progress-bar {
+height: 8px;
+background: #e0e6ed;
+border-radius: 4px;
+overflow: hidden;
+margin: 12px 0;
+}
+.progress-bar .fill {
+height: 100%;
+background: linear-gradient(90deg, var(--primary), var(--primary-light));
+border-radius: 4px;
+transition: width 0.4s ease;
+}
+.alert {
+padding: 12px 16px;
+border-radius: 8px;
+margin: 10px 0;
+font-size: 0.86rem;
+border-left: 4px solid;
+}
+.alert-info { background: #eaf2f8; border-color: var(--primary-light); }
+.alert-warn { background: var(--warning-soft); border-color: var(--warning); }
+.alert-danger { background: var(--accent-soft); border-color: var(--accent); }
+.alert-success { background: var(--success-soft); border-color: var(--success); }
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+@media (max-width: 700px) {
+.grid-2 { grid-template-columns: 1fr; }
+.nav-tabs button { min-width: 80px; font-size: 0.75rem; padding: 8px 6px; }
+header h1 { font-size: 1.15rem; }
+}
+.step-indicator {
+display: flex;
+gap: 6px;
+margin-bottom: 16px;
+flex-wrap: wrap;
+}
+.step-dot {
+flex: 1;
+min-width: 30px;
+height: 6px;
+border-radius: 3px;
+background: #e0e6ed;
+transition: background 0.3s;
+}
+.step-dot.done { background: var(--success); }
+.step-dot.active { background: var(--primary); }
+.collapsible {
+cursor: pointer;
+display: flex;
+justify-content: space-between;
+align-items: center;
+}
+.collapsible::after { content: '▼'; font-size: 0.7rem; color: var(--text-light); transition: transform 0.2s; }
+.collapsible.open::after { transform: rotate(180deg); }
+.collapsible-content { max-height: 0; overflow: hidden; transition: max-height 0.35s ease; }
+.collapsible-content.open { max-height: 2000px; }
+.tooltip {
+position: relative;
+border-bottom: 1px dotted var(--primary-light);
+cursor: help;
+}
+.tooltip:hover::after {
+content: attr(data-tip);
+position: absolute;
+bottom: 100%;
+left: 50%;
+transform: translateX(-50%);
+background: #2c3e50;
+color: #fff;
+padding: 6px 12px;
+border-radius: 6px;
+font-size: 0.75rem;
+white-space: nowrap;
+z-index: 50;
+box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+.score-display {
+font-size: 1.8rem;
+font-weight: 800;
+color: var(--primary);
+}
+footer {
+text-align: center;
+padding: 24px 16px;
+font-size: 0.78rem;
+color: var(--text-light);
+border-top: 1px solid var(--border);
+margin-top: 32px;
+}
+footer a { color: var(--primary-light); text-decoration: none; }
+.tag {
+display: inline-block;
+background: #eef2f7;
+color: var(--primary);
+padding: 2px 8px;
+border-radius: 4px;
+font-size: 0.72rem;
+font-weight: 600;
+margin: 2px;
+}
+.lvef-visual {
+display: flex;
+align-items: center;
+gap: 12px;
+margin: 8px 0;
+font-size: 0.85rem;
+}
+.lvef-bar {
+flex: 1;
+height: 20px;
+background: #e0e6ed;
+border-radius: 10px;
+overflow: hidden;
+position: relative;
+}
+.lvef-fill {
+height: 100%;
+border-radius: 10px;
+transition: width 0.5s;
+}
+.lvef-label { font-weight: 700; min-width: 50px; text-align: right; font-size: 0.82rem; }
+</style>
+</head>
+<body>
+
+<header>
+<h1>🫀 Heart Failure GDMT Learning App</h1>
+<p>Interactive guide based on 2022 AHA/ACC/HFSA, 2024 ACC ECDP, and 2026 ACC HFpEF Consensus</p>
+</header>
+
+<div class="container">
+<div class="nav-tabs" id="navTabs">
+<button data-section="overview" class="active">📋 Overview</button>
+<button data-section="hfref">🔴 HFrEF</button>
+<button data-section="hfmref">🟠 HFmrEF</button>
+<button data-section="hfpef">🟢 HFpEF</button>
+<button data-section="hfimpef">🔵 HFimpEF</button>
+<button data-section="acute">⚡ Acute HF</button>
+<button data-section="devices">🔧 Devices</button>
+<button data-section="nonpharm">🏃 Non-Pharm</button>
+<button data-section="quiz">🧠 Quiz</button>
+</div>
+
+<!-- ==================== OVERVIEW ==================== -->
+<div class="section active" id="overview">
+<div class="card">
+<h2>📊 HF Classification by LVEF</h2>
+<p>The 2022 AHA/ACC/HFSA guideline classifies heart failure into four categories based on left ventricular ejection fraction (LVEF).<sup>1</sup></p>
+<div style="margin: 16px 0;">
+<div class="lvef-visual">
+<span style="min-width: 70px; font-weight:600;">HFrEF</span>
+<div class="lvef-bar"><div class="lvef-fill" style="width:40%; background:#e74c3c;"></div></div>
+<span class="lvef-label">≤40%</span>
+</div>
+<div class="lvef-visual">
+<span style="min-width: 70px; font-weight:600;">HFmrEF</span>
+<div class="lvef-bar"><div class="lvef-fill" style="width:49%; background:#f39c12;"></div></div>
+<span class="lvef-label">41–49%</span>
+</div>
+<div class="lvef-visual">
+<span style="min-width: 70px; font-weight:600;">HFpEF</span>
+<div class="lvef-bar"><div class="lvef-fill" style="width:70%; background:#27ae60;"></div></div>
+<span class="lvef-label">≥50%</span>
+</div>
+<div class="lvef-visual">
+<span style="min-width: 70px; font-weight:600;">HFimpEF</span>
+<div class="lvef-bar"><div class="lvef-fill" style="width:55%; background:#2980b9;"></div></div>
+<span class="lvef-label">>40%*</span>
+</div>
+</div>
+<p style="font-size:0.8rem; color:var(--text-light);">*HFimpEF: previously ≤40%, now >40% — continue GDMT regardless of recovery.</p>
+</div>
+
+<div class="card accent">
+<h2>🎯 The Four Pillars of GDMT for HFrEF</h2>
+<p style="margin-bottom:12px;">All four drug classes reduce mortality. Together they reduce all-cause mortality by an estimated <strong>73% vs no treatment</strong>.<sup>2,3</sup></p>
+<table>
+<thead>
+<tr><th>Pillar</th><th>Drugs</th><th>Key Benefit</th></tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="pill pill-blue">RAASi</span></td>
+<td>ARNI (sacubitril/valsartan) preferred; ACEi; ARB</td>
+<td>↓ Mortality, ↓ HF hospitalization</td>
+</tr>
+<tr>
+<td><span class="pill pill-green">Beta-blocker</span></td>
+<td>Carvedilol, metoprolol succinate, bisoprolol</td>
+<td>↓ Death, ↓ hospitalization</td>
+</tr>
+<tr>
+<td><span class="pill pill-orange">MRA</span></td>
+<td>Spironolactone, eplerenone</td>
+<td>↓ Mortality, ↓ hospitalization</td>
+</tr>
+<tr>
+<td><span class="pill pill-purple">SGLT2i</span></td>
+<td>Dapagliflozin, empagliflozin</td>
+<td>↓ CV death, ↓ HF hospitalization</td>
+</tr>
+</tbody>
+</table>
+<div class="alert alert-info">
+<strong>💡 Key Principle:</strong> Start all four classes early (within 4–6 weeks), then uptitrate to target by 3 months. Low-dose quadruple therapy is superior to high-dose monotherapy.<sup>4</sup>
+</div>
+</div>
+
+<div class="card">
+<h2>📈 Quick Comparison Across EF Categories</h2>
+<table>
+<thead>
+<tr><th>Category</th><th>LVEF</th><th>Core Therapy</th><th>Evidence Level</th></tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>HFrEF</strong></td>
+<td>≤40%</td>
+<td>Quadruple therapy (ARNI/ACEi/ARB + BB + MRA + SGLT2i)</td>
+<td><span class="badge badge-1">Class 1</span></td>
+</tr>
+<tr>
+<td><strong>HFmrEF</strong></td>
+<td>41–49%</td>
+<td>SGLT2i; consider all 4 classes</td>
+<td><span class="badge badge-2a">Class 2a</span></td>
+</tr>
+<tr>
+<td><strong>HFpEF</strong></td>
+<td>≥50%</td>
+<td>SGLT2i + finerenone (nonsteroidal MRA); ± semaglutide/tirzepatide if BMI ≥30</td>
+<td><span class="badge badge-2a">Class 2a</span></td>
+</tr>
+<tr>
+<td><strong>HFimpEF</strong></td>
+<td>Previously ≤40%, now >40%</td>
+<td>Continue original GDMT — do not withdraw</td>
+<td><span class="badge badge-1">Class 1</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<!-- ==================== HFrEF ==================== -->
+<div class="section" id="hfref">
+<div class="card accent">
+<h2>🔴 HFrEF (LVEF ≤40%) — Quadruple Therapy</h2>
+<p>All four classes should be started, ideally within <strong>4–6 weeks</strong> of diagnosis, then uptitrated to target (or maximally tolerated) doses within <strong>3 months</strong>.<sup>4</sup></p>
+</div>
+
+<div class="card">
+<h2>💊 The Four Pillars — Detailed</h2>
+
+<h3>1. RAAS Inhibition — ARNI Preferred</h3>
+<div class="alert alert-info">
+<strong>Sacubitril/valsartan (ARNI)</strong> is preferred over ACE inhibitors and ARBs in chronic HFrEF with NYHA class II–III symptoms. In PARADIGM-HF it reduced all-cause mortality by a <strong>2.8% absolute margin</strong> vs enalapril.<sup>1,3</sup>
+</div>
+<ul style="margin-left:18px; font-size:0.88rem;">
+<li><strong>ARNI:</strong> Sacubitril/valsartan — start 24/26 mg BID, target 97/103 mg BID</li>
+<li><strong>ACEi:</strong> If ARNI not feasible — e.g., lisinopril, enalapril</li>
+<li><strong>ARB:</strong> Third-line for ACE/ARNI intolerance</li>
+<li><strong>⚠️ Washout:</strong> Allow <strong>36-hour washout</strong> from ACE inhibitor before starting ARNI to avoid angioedema</li>
+</ul>
+
+<h3>2. Beta-Blocker</h3>
+<p style="font-size:0.88rem;">Use a <strong>cardioprotective agent</strong> only: carvedilol, metoprolol succinate, or bisoprolol. These reduce death and hospitalization.<sup>3</sup></p>
+<div class="alert alert-warn">
+<strong>⚠️ Important:</strong> Defer beta-blocker initiation until HF is <strong>compensated/euvolemic</strong>. Do not start during acute decompensation.
+</div>
+
+<h3>3. Mineralocorticoid Receptor Antagonist (MRA)</h3>
+<p style="font-size:0.88rem;">Spironolactone or eplerenone. <strong>Avoid if eGFR ≤30 mL/min</strong>, and <strong>discontinue if potassium cannot be kept &lt;5.5 mEq/L</strong>.<sup>3</sup></p>
+
+<h3>4. SGLT2 Inhibitor</h3>
+<p style="font-size:0.88rem;">Dapagliflozin or empagliflozin, <strong>regardless of diabetes status</strong> (Class 1, LOE A). Reduces cardiovascular death and HF hospitalization.<sup>5,1</sup></p>
+</div>
+
+<!-- Interactive GDMT Sequencing Tool -->
+<div class="card success">
+<h2>🧩 Interactive GDMT Sequencing Tool</h2>
+<p style="font-size:0.88rem; margin-bottom:12px;">Drag to reorder the four pillars in your preferred initiation sequence. The app will validate against guideline principles.</p>
+<div class="interactive-box">
+<h3>Drag to reorder — click "Check Sequence" when ready</h3>
+<div class="drug-list" id="drugList">
+<div class="drug-item" draggable="true" data-drug="sglt2i">
+<span class="handle">⠿</span>
+<span class="label">SGLT2 Inhibitor (dapagliflozin / empagliflozin)</span>
+<span class="status on">Easy start</span>
+</div>
+<div class="drug-item" draggable="true" data-drug="bb">
+<span class="handle">⠿</span>
+<span class="label">Beta-Blocker (carvedilol / metoprolol succinate / bisoprolol)</span>
+<span class="status on">Needs euvolemia</span>
+</div>
+<div class="drug-item" draggable="true" data-drug="arni">
+<span class="handle">⠿</span>
+<span class="label">ARNI (sacubitril/valsartan)</span>
+<span class="status on">36h washout from ACEi</span>
+</div>
+<div class="drug-item" draggable="true" data-drug="mra">
+<span class="handle">⠿</span>
+<span class="label">MRA (spironolactone / eplerenone)</span>
+<span class="status on">Monitor K⁺ &amp; eGFR</span>
+</div>
+</div>
+<div style="margin-top:12px;">
+<button class="btn btn-primary" onclick="checkSequence()">Check Sequence</button>
+<button class="btn btn-outline" onclick="resetSequence()">Reset</button>
+</div>
+<div id="sequenceFeedback" style="margin-top:10px;"></div>
+</div>
+</div>
+
+<div class="card">
+<h2>📋 Additional / Selected Therapies</h2>
+<table>
+<thead>
+<tr><th>Therapy</th><th>Indication</th><th>Notes</th></tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Hydralazine-ISDN</strong></td>
+<td>Self-identified Black patients with NYHA III–IV</td>
+<td>Also option when RAAS inhibitors contraindicated</td>
+</tr>
+<tr>
+<td><strong>Ivabradine</strong></td>
+<td>Selected patients (sinus rhythm, HR ≥70 on max BB)</td>
+<td>Brand-name Corlanor discontinued in US Jan 1, 2026; remains in guidelines</td>
+</tr>
+<tr>
+<td><strong>Vericiguat</strong></td>
+<td>Selected patients with recent worsening HF</td>
+<td>Soluble guanylate cyclase stimulator</td>
+</tr>
+<tr>
+<td><strong>Digoxin</strong></td>
+<td>Selected patients for symptom control</td>
+<td>No mortality benefit</td>
+</tr>
+<tr>
+<td><strong>Loop diuretics</strong></td>
+<td>Congestion</td>
+<td>Symptom control only — not mortality benefit</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<!-- ==================== HFmrEF ==================== -->
+<div class="section" id="hfmref">
+<div class="card warning">
+<h2>🟠 HFmrEF (LVEF 41–49%)</h2>
+<p>Use diuretics for fluid overload, and an SGLT2 inhibitor (Class 2a). Post-hoc analyses support benefit from all four GDMT classes.<sup>3</sup></p>
+</div>
+<div class="card">
+<h2>📋 Management Approach</h2>
+<table>
+<thead>
+<tr><th>Therapy</th><th>Recommendation</th><th>Notes</th></tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>SGLT2i</strong></td>
+<td><span class="badge badge-2a">Class 2a</span></td>
+<td>Best-supported therapy; start early</td>
+</tr>
+<tr>
+<td><strong>Diuretics</strong></td>
+<td><span class="badge badge-1">Class 1</span></td>
+<td>For congestion/fluid overload</td>
+</tr>
+<tr>
+<td><strong>Beta-blockers</strong></td>
+<td>Consider (post-hoc)</td>
+<td>In sinus rhythm</td>
+</tr>
+<tr>
+<td><strong>ARNI/ACEi/ARB</strong></td>
+<td>Consider (post-hoc)</td>
+<td>Greater benefit at lower EF end</td>
+</tr>
+<tr>
+<td><strong>MRA</strong></td>
+<td>Consider (post-hoc)</td>
+<td>Monitor K⁺ and renal function</td>
+</tr>
+</tbody>
+</table>
+<div class="alert alert-info">
+<strong>💡 Clinical Pearl:</strong> HFmrEF often behaves more like HFrEF than HFpEF. Post-hoc analyses of major trials (PARAGON-HF, TOPCAT, etc.) suggest benefit from neurohormonal blockade, especially when EF is toward 41–45%.
+</div>
+</div>
+</div>
+
+<!-- ==================== HFpEF ==================== -->
+<div class="section" id="hfpef">
+<div class="card success">
+<h2>🟢 HFpEF (LVEF ≥50%) — 2026 ACC Consensus Update</h2>
+<p>Historically the hardest group to treat, but the evidence base has grown substantially. The <strong>2026 ACC Expert Consensus Decision Pathway</strong> reframes HFpEF as a multisystem syndrome driven by visceral adiposity, inflammatory adipokines, and metabolic dysfunction.<sup>11</sup></p>
+</div>
+
+<div class="card">
+<h2>🎯 Foundational Therapy (2026 Update)</h2>
+<div class="alert alert-success">
+<strong>Core regimen:</strong> SGLT2 inhibitor <strong>+</strong> nonsteroidal MRA (finerenone preferred over spironolactone) unless contraindicated. Initiate without delay.<sup>11,et2</sup>
+</div>
+iology <table>
+<thead>
+<tr><th>The</rapy</th><th>Recommendation</th><th>Evidence</th></tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>SGLT2i</strong> (dapagliflozin/empagliflozin)</td>
+<td><span class="badge badge-2a">Class 2a</span> — Best-supported</td>
+<td>EMPEROR-Preserved, DELIVER: 18–21% ↓ HF hospitalization/CV death</td>
+</tr>
+<tr>
+<td><strong>Finerenone</strong> (nonsteroidal MRA)</td>
+<td>Preferred MRA cornerstone</td>
+<td>FINEARTS-HF; lower hyperkalemia risk vs spironolactone</td>
+</tr>
+<tr>
+<td><strong>Semaglutide / Tirzepatide</strong></td>
+<td>If BMI ≥30 kg/m²</td>
+<td>STEP-HFpEF, SUMMIT: improved symptoms, weight loss</td>
+</tr>
+<tr>
+<td><strong>Diuretics</strong></td>
+<td><span class="badge badge-1">Class 1</span></td>
+<td>For congestion</td>
+</tr>
+<tr>
+<td><strong>Blood pressure control</strong></td>
+<td><span class="badge badge-1">Class 1</span></td>
+<td>Treat hypertension aggressively</td>
+</tr>
+<tr>
+<td><strong>MRAs (steroidal)</strong>, ARBs, ARNI</td>
+<td><span class="badge badge-2b">Class 2b</span></td>
+<td>Greater apparent benefit at lower EF range</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<div class="card">
+<h2>🔍 Diagnosis — H2FPEF & HFA-PEFF Scores</h2>
+<p style="font-size:0.88rem;">The 2026 pathway recommends sequential use of <strong>H2FPEF</strong> (initial screening) followed by <strong>HFA-PEFF</strong> (confirmation). Discordance can prompt advanced testing.<sup>11</sup></p>
+<div class="grid-2">
+<div class="interactive-box">
+<h3>H2FPEF Score</h3>
+<ul style="font-size:0.82rem; margin-left:16px;">
+<li><strong>H</strong>eavy (BMI >30)</li>
+<li><strong>H</strong>ypertension (≥2 drugs)</li>
+<li><strong>F</strong>ibrial (atrial fibrillation)</li>
+<li><strong>P</strong>ulmonary hypertension</li>
+<li><strong>E</strong>lder (>60 years)</li>
+<li><strong>F</strong>illing pressures (E/e′ >9)</li>
+</ul>
+<p style="font-size:0.78rem; color:var(--text-light); margin-top:6px;">Higher sensitivity, fewer variables</p>
+</div>
+<div class="interactive-box">
+<h3>HFA-PEFF Score</h3>
+<ul style="font-size:0.82rem; margin-left:16px;">
+<li><strong>P</strong>retest assessment</li>
+<li><strong>E</strong>chocardiographic & natriuretic peptide</li>
+<li><strong>F</strong>unctional testing (diastolic stress)</li>
+<li><strong>F</strong>inal ali>
+</ul>
+<p style="font-size:0.78rem; color:var(--text-light); margin-top:6px;">More specific, often requires advanced testing</p>
+</div>
+</div>
+<div class="alert alert-warn">
+<strong>⚠️ Diagnose by exclusion:</strong> Rule out noncardiac mimics (pulmonary disease, kidney disease, high-output states, obesity, frailty) and cardiac mimics (valvular disease, pericardial constriction, infiltrative cardiomyopathies, ischemic heart disease).
+</div>
+</div>
+</div>
+
+<!-- ==================== HFimpEF ==================== -->
+<div class="section" id="hfimpef">
+<div class="card" style="border-left-color: #2980b9;">
+<h2>🔵 HF with Improved EF (HFimpEF)</h2>
+<p><strong>Definition:</strong> Previous LVEF ≤40% and follow-up measurement of LVEF >40%.<sup>1</sup></p>
+</div>
+<div class="card">
+<h2>📋 Management Principle</h2>
+<div class="alert alert-success">
+<strong>Continue the GDMT originally indicated for HFrEF even after EF recovers</strong> (Class 1, LOE B-R). Withdrawal risks relapse.<sup>1</sup>
+</div>
+<p style="font-size:0.88rem;">The TRED-HF trial demonstrated a <strong>44% rate of relapse</strong> of dilated cardiomyopathy within 6 months of discontinuing GDMT in patients with recovered DCM. Therefore, GDMT should be continued in patients with HFimpEF, including those who are asymptomatic.<sup>8</sup></p>
+<div class="interactive-box">
+<h3>🧠 Quick Check</h3>
+<p style="font-size:0.85rem;">A patient with prior LVEF 25% now has LVEF 55% on quadruple therapy and feels well. What do you do?</p>
+<button class="quiz-option" onclick="checkQuick(this, false, 'hfimpef')">Stop all GDMT — EF has normalized</button>
+<button class="quiz-option" onclick="checkQuick(this, true, 'hfimpef')">Continue GDMT indefinitely — withdrawal risks relapse</button>
+<button class="quiz-option" onclick="checkQuick(this, false, 'hfimpef')">Reduce to SGLT2i only</button>
+<div class="quiz-feedback" id="feedback-hfimpef"></div>
+</div>
+</div>
+</div>
+
+<!-- ==================== ACUTE HF ==================== -->
+<div class="section" id="acute">
+<div class="card accent">
+<h2>⚡ Acute Heart Failure — STRONG-HF Strategy</h2>
+<p>For acutely hospitalized patients, the <strong>STRONG-HF</strong> strategy of rapid uptitration to target doses within ~2 weeks of discharge with close follow-up reduced 180-day readmission or death by <strong>34%</strong>.<sup>3</sup></p>
+</div>
+
+<div class="card">
+<h2>📋 STRONG-HF Protocol</h2>
+<table>
+<thead>
+<tr><th>Timing</th><th>Action</th></tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>2 days before discharge</strong></td>
+<td>Prescribe at least <strong>half optimal doses</strong> of beta-blocker, ACEi/ARB/ARNI, and MRA</td>
+</tr>
+<tr>
+<td><strong>2 weeks post-discharge</strong></td>
+<td>Uptitrate to <strong>full optimal doses</strong> of all three classes</td>
+</tr>
+<tr>
+<td><strong>Follow-up visits</strong></td>
+<td>1, 2, 3, and 6 weeks post-discharge with lab monitoring (renal function, K⁺, NT-proBNP)</td>
+</tr>
+</tbody>
+</table>
+<div class="alert alert-info">
+<strong>💡 Key Insight:</strong> Rapid uptitration before and early after discharge is feasible, safe, and improves outcomes regardless of HF etiology (ischemic vs nonischemic).<sup>13</sup>
+</div>
+</div>
+
+<div class="card">
+<h2>🏥 In-Hospital Initiation Principles</h2>
+<ul style="font-size:0.88rem; margin-left:18px;">
+<li><strong>Initiate/uptitrate GDMT within 3 days of admission</strong> — this is the most important intervention.<sup>5</sup></li>
+<li>Prioritize starting <strong>multiple GDMT at low doses</strong> over optimizing a few.<sup>5</sup></li>
+<li>Uptitrate to at least <strong>50% of target doses</strong> during hospitalization.<sup>5</sup></li>
+<li><strong>SGLT2i and MRA</strong> should be initiated early during hospitalization.<sup>5</sup></li>
+<li>Beta-blocker: start only when <strong>euvolemic/compensated</strong>.</li>
+</ul>
+</div>
+
+<div class="card">
+<h2>💧 Decongestion Strategy</h2>
+<ul style="font-size:0.88rem; margin-left:18px;">
+<li><strong>Loop diuretics</strong> — first-line, personalized starting dose.</li>
+<li>Escalate promptly if insufficient decongestive response.</li>
+<li>Consider combination diuretic therapy (loop + thiazide) for resistance.</li>
+<li>Monitor urine output, weight, renal function, and electrolytes daily.</li>
+</ul>
+</div>
+</div>
+
+<!-- ==================== DEVICES ==================== -->
+<div class="section" id="devices">
+<div class="card" style="border-left-color:#8e44ad;">
+<h2>🔧 Device Therapy — ICD & CRT</h2>
+<p>Reassess ventricular function <strong>3–6 months after target doses are reached</strong> to determine need for an ICD (sudden death prevention) and/or CRT.<sup>4</sup></p>
+</div>
+
+<div class="card">
+<h2>⚡ ICD Indications</h2>
+<table>
+<thead>
+<tr><th>Criteria</th><th>Details</th></tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Primary prevention</strong></td>
+<td>LVEF ≤35%, NYHA class II–III symptoms, on ≥3 months of optimal GDMT, good life expectancy</td>
+</tr>
+<tr>
+<td><strong>Secondary prevention</strong></td>
+<td>Survivor of cardiac arrest or hemodynamically unstable VT</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<div class="card">
+<h2>🔄 CRT Indications</h2>
+<table>
+<thead>
+<tr><th>Criteria</th><th>Recommendation</th></tr>
+</thead>
+<tbody>
+<tr>
+<td>LVEF ≤35%, sinus rhythm, LBBB, QRS ≥150 ms, NYHA II–III</td>
+<td><span class="badge badge-1">Class 1</span></td>
+</tr>
+<tr>
+<td>LVEF ≤35%, sinus rhythm, LBBB, QRS 120–149 ms, NYHA II–III</td>
+<td><span class="badge badge-2a">Class 2a</span></td>
+</tr>
+<tr>
+<td>LVEF ≤35%, sinus rhythm, non-LBBB, QRS ≥150 ms, NYHA III–IV</td>
+<td><span class="badge badge-2a">Class 2a</span></td>
+</tr>
+<tr>
+<td>LVEF ≤35% with AF and QRS ≥120 ms, if AV node ablation or rate control needed</td>
+<td><span class="badge badge-2a">Class 2a</span></td>
+</tr>
+</tbody>
+</table>
+<div class="alert alert-info">
+<strong>💡 Key Point:</strong> CRT benefits are greatest with <strong>LBBB morphology and wider QRS</strong>. Many CRT devices include ICD capability (CRT-D).
+</div>
+</div>
+</div>
+
+<!-- ==================== NON-PHARM ==================== -->
+<div class="section" id="nonpharm">
+<div class="card" style="border-left-color:#16a085;">
+<h2>🏃 Non-Pharmacologic & Holistic Management</h2>
+<p>Applies to <strong>all EF categories</strong>. These interventions are important but often underutilized.<sup>16</sup></p>
+</div>
+
+<div class="card">
+<h2>🍎 Diet & Nutrition</h2>
+<ul style="font-size:0.88rem; margin-left:18px;">
+<li><strong>Sodium:</strong> AHA/ACC suggests <strong>&lt;2,300 mg/day</strong> (evidence limited); individualize targets.<sup>3</sup></li>
+<li><strong>Dietary patterns:</strong> Mediterranean, DASH-style, or plant-based diets are reasonable.<sup>16</sup></li>
+<li><strong>Fluid:</strong> Individualized targets; routine strict fluid restriction not universally required.</li>
+<li><strong>Dietitian referral:</strong> Emphasized as valuable support.<sup>16</sup></li>
+</ul>
+</div>
+
+<div class="card">
+<h2>🏋️ Exercise & Cardiac Rehabilitation</h2>
+<div class="alert alert-success">
+<strong>Exercise training / cardiac rehabilitation improves functional status and quality of life across all stages.</strong><sup>3,16</sup>
+</div>
+<ul style="font-size:0.88rem; margin-left:18px;">
+<li>Improves exercise tolerance and lowers hospitalization rates.</li>
+<li>For HFrEF, reduces mortality.<sup>16</sup></li>
+<li>Despite benefits, cardiac rehabilitation remains <strong>underutilized</strong>.<sup>16</sup></li>
+</ul>
+</div>
+
+<div class="card">
+<h2>🧠 Holistic Management Checklist</h2>
+<div class="grid-2">
+<div>
+<h3 style="font-size:0.9rem;">✅ Screen & Treat</h3>
+<ul style="font-size:0.84rem; margin-left:16px;">
+<li>Depression & anxiety</li>
+<li>Sleep-disordered breathing</li>
+<li>Substance use disorders</li>
+<li>Iron deficiency</li>
+<li>Thyroid disease</li>
+<li>Sleep apnea</li>
+<li>CAD, hypertension, AF, diabetes, CKD</li>
+</ul>
+</div>
+<div>
+<h3 style="font-size:0.9rem;">✅ Lifestyle</h3>
+<ul style="font-size:0.84rem; margin-left:16px;">
+<li>Weight management</li>
+<li>Smoking cessation</li>
+<li>Alcohol moderation</li>
+<li>Vaccination (COVID-19, influenza, pneumococcal)</li>
+<li>Multidisciplinary HF management program</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+
+<!-- ==================== QUIZ ==================== -->
+<div class="section" id="quiz">
+<div class="card">
+<h2>🧠 Knowledge Check — Heart Failure GDMT</h2>
+<p style="font-size:0.88rem; margin-bottom:16px;">Test your understanding of guideline-directed medical therapy across all HF classifications.</p>
+<div class="progress-bar"><div class="fill" id="quizProgress" style="width:0%;"></div></div>
+<p style="font-size:0.82rem; color:var(--text-light);" id="quizProgressText">0 / 10 questions answered</p>
+</div>
+
+<div id="quizContainer"></div>
+
+<div class="card" id="quizResult" style="display:none;">
+<h2>📊 Your Results</h2>
+<div style="text-align:center; padding:20px;">
+<div class="score-display" id="finalScore">0 / 10</div>
+<p id="scoreMessage" style="margin-top:8px; font-size:0.9rem;"></p>
+<button class="btn btn-primary" onclick="resetQuiz()" style="margin-top:12px;">Retake Quiz</button>
+</div>
+</div>
+</div>
+</div>
+
+<footer>
+<p>Educational tool based on 2022 AHA/ACC/HFSA HF Guideline, 2024 ACC HFrEF ECDP, and 2026 ACC HFpEF ECDP.</p>
+<p style="margin-top:4px;">Not a substitute for clinical judgment. Always consult current guidelines and individualize patient care.</p>
+</footer>
+
+<script>
+// ==================== NAVIGATION ====================
+document.querySelectorAll('#navTabs button').forEach(btn => {
+btn.addEventListener('click', () => {
+document.querySelectorAll('#navTabs button').forEach(b => b.classList.remove('active'));
+document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+btn.classList.add('active');
+document.getElementById(btn.dataset.section).classList.add('active');
+window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+});
+
+// ==================== DRAG & DROP SEQUENCING ====================
+let draggedItem = null;
+const drugList = document.getElementById('drugList');
+
+drugList.addEventListener('dragstart', e => {
+draggedItem = e.target.closest('.drug-item');
+if (draggedItem) {
+draggedItem.classList.add('dragging');
+e.dataTransfer.effectAllowed = 'move';
+}
+});
+
+drugList.addEventListener('dragend', e => {
+if (draggedItem) {
+draggedItem.classList.remove('dragging');
+draggedItem = null;
+}
+});
+
+drugList.addEventListener('dragover', e => {
+e.preventDefault();
+const afterElement = getDragAfterElement(drugList, e.clientY);
+const currentDragging = document.querySelector('.dragging');
+if (!currentDragging) return;
+if (afterElement == null) {
+drugList.appendChild(currentDragging);
+} else {
+drugList.insertBefore(currentDragging, afterElement);
+}
+});
+
+function getDragAfterElement(container, y) {
+const draggableElements = [...container.querySelectorAll('.drug-item:not(.dragging)')];
+return draggableElements.reduce((closest, child) => {
+const box = child.getBoundingClientRect();
+const offset = y - box.top - box.height / 2;
+if (offset < 0 && offset > closest.offset) {
+return { offset: offset, element: child };
+}
+return closest;
+}, { offset: Number.NEGATIVE_INFINITY }).element;
+}
+
+function checkSequence() {
+const items = [...drugList.querySelectorAll('.drug-item')];
+const order = items.map(i => i.dataset.drug);
+const feedback = document.getElementById('sequenceFeedback');
+
+// Guideline-aligned principles:
+// - SGLT2i is easiest to start first (no titration, minimal BP effect)
+// - Beta-blocker requires euvolemia
+// - ARNI preferred RAASi (36h washout from ACEi)
+// - MRA requires K+ monitoring
+// There is no single "mandatory" order, but practical guidance:
+// Start SGLT2i + (BB or ARNI) first, then add MRA.
+
+const first = order[0];
+const second = order[1];
+
+let msg = '';
+let type = '';
+
+if (first === 'sglt2i') {
+msg = '✅ Excellent choice! SGLT2 inhibitors are the easiest to start first: no titration needed, minimal BP effect, and can be started even with eGFR down to 20 mL/min/1.73 m².';
+type = 'success';
+} else if (first === 'bb') {
+msg = '⚠️ Beta-blocker first is reasonable IF the patient is euvolemic. Remember: defer beta-blocker initiation until HF is compensated.';
+type = 'warning';
+} else if (first === 'arni') {
+msg = '⚠️ ARNI first is reasonable if BP permits. Remember the 36-hour washout if switching from an ACE inhibitor.';
+type = 'warning';
+} else if (first === 'mra') {
+msg = '⚠️ MRA first is less common. Ensure K⁺ <5.0 and eGFR >30 before starting.';
+type = 'warning';
+}
+
+// Additional validation
+const bbIndex = order.indexOf('bb');
+const arniIndex = order.indexOf('arni');
+const mraIndex = order.indexOf('mra');
+
+if (bbIndex < arniIndex && first !== 'sglt2i') {
+msg += ' Note: Some evidence supports starting beta-blocker before ARNI in stable patients, but ensure euvolemia.';
+}
+
+if (mraIndex === 3) {
+msg += ' MRA last is a common and practical approach given potassium monitoring.';
+}
+
+// Check that all four are present
+if (order.length !== 4) {
+msg = '❌ Please ensure all four drug classes are in the list.';
+type = 'danger';
+}
+
+feedback.innerHTML = `<div class="alert alert-${type}">${msg}</div>`;
+}
+
+function resetSequence() {
+const list = document.getElementById('drugList');
+const items = [...list.querySelectorAll('.drug-item')];
+// Reset to default order
+const defaultOrder = ['sglt2i', 'bb', 'arni', 'mra'];
+defaultOrder.forEach(drug => {
+const item = items.find(i => i.dataset.drug === drug);
+if (item) list.appendChild(item);
+});
+document.getElementById('sequenceFeedback').innerHTML = '';
+}
+
+// ==================== QUICK CHECK ====================
+function checkQuick(el, isCorrect, id) {
+const parent = el.parentElement;
+parent.querySelectorAll('.quiz-option').forEach(o => {
+o.classList.add('disabled');
+o.style.pointerEvents = 'none';
+});
+if (isCorrect) {
+el.classList.add('correct');
+} else {
+el.classList.add('incorrect');
+// Highlight correct answer
+parent.querySelectorAll('.quiz-option').forEach(o => {
+if (o.getAttribute('onclick')?.includes('true')) {
+o.classList.add('correct');
+}
+});
+}
+const fb = document.getElementById('feedback-' + id);
+fb.className = 'quiz-feedback show ' + (isCorrect ? 'correct' : 'incorrect');
+fb.textContent = isCorrect
+? '✅ Correct! GDMT should be continued indefinitely in HFimpEF. The TRED-HF trial showed a 44% relapse rate within 6 months of withdrawal.'
+: '❌ Not quite. GDMT should be continued indefinitely in HFimpEF — withdrawal risks relapse. The TRED-HF trial showed a 44% relapse rate within 6 months of discontinuation.';
+}
+
+// ==================== QUIZ ====================
+const quizData = [
+{
+question: 'What is the LVEF range for HFmrEF (heart failure with mildly reduced ejection fraction)?',
+options: ['≤40%', '41–49%', '≥50%', '>40% after previously being ≤40%'],
+correct: 1,
+explanation: 'HFmrEF is defined as LVEF 41–49% with evidence of increased LV filling pressures.'
+},
+{
+question: 'Which RAAS inhibitor is PREFERRED as first-line for chronic HFrEF with NYHA class II–III symptoms?',
+options: ['Lisinopril (ACEi)', 'Losartan (ARB)', 'Sacubitril/valsartan (ARNI)', 'Spironolactone (MRA)'],
+correct: 2,
+explanation: 'Sacubitril/valsartan (ARNI) is preferred over ACE inhibitors and ARBs. In PARADIGM-HF it reduced all-cause mortality by a 2.8% absolute margin vs enalapril.'
+},
+{
+question: 'How long must you wait after stopping an ACE inhibitor before starting an ARNI?',
+options: ['12 hours', '24 hours', '36 hours', '48 hours'],
+correct: 2,
+explanation: 'A 36-hour washout from an ACE inhibitor is required before starting an ARNI to avoid angioedema.'
+},
+{
+question: 'Which SGLT2 inhibitor finding is correct regarding diabetes status in HFrEF?',
+options: [
+'Only effective in patients with type 2 diabetes',
+'Reduces HF hospitalization and CV death regardless of diabetes status',
+'Contraindicated in patients without diabetes',
+'Only effective in HFpEF, not HFrEF'
+],
+correct: 1,
+explanation: 'SGLT2 inhibitors (dapagliflozin, empagliflozin) reduce cardiovascular death and HF hospitalization regardless of diabetes status (Class 1, LOE A).'
+},
+{
+question: 'In the 2026 ACC HFpEF consensus pathway, which regimen is recommended as foundational therapy?',
+options: [
+'ARNI + beta-blocker',
+'SGLT2 inhibitor + finerenone (nonsteroidal MRA)',
+'Spironolactone + ACE inhibitor',
+'Digoxin + diuretic'
+],
+correct: 1,
+explanation: 'The 2026 ACC ECDP recommends an SGLT2 inhibitor plus a nonsteroidal MRA (finerenone preferred over spironolactone) as foundational therapy for HFpEF.'
+},
+{
+question: 'For which HFpEF patients does the 2026 ACC pathway recommend incretin-based therapy (semaglutide/tirzepatide)?',
+options: ['All HFpEF patients', 'BMI ≥30 kg/m²', 'Only patients with diabetes', 'Only patients with AF'],
+correct: 1,
+explanation: 'The 2026 pathway recommends incretin-based therapy for HFpEF patients with BMI ≥30 kg/m², based on STEP-HFpEF and SUMMIT trial data.'
+},
+{
+question: 'What is the STRONG-HF strategy for acute HF?',
+options: [
+'Slow titration over 6 months',
+'Rapid uptitration to target doses within 2 weeks of discharge with close follow-up',
+'Starting only diuretics and delaying GDMT',
+'Starting GDMT only after 3 months of stability'
+],
+correct: 1,
+explanation: 'STRONG-HF showed that rapid uptitration to target doses within ~2 weeks of discharge with close follow-up reduced 180-day readmission or death by 34%.'
+},
+{
+question: 'When should beta-blocker initiation be deferred in HFrEF?',
+options: [
+'When LVEF is below 25%',
+'When the patient is not euvolemic/compensated',
+'When the patient is over 75 years old',
+'When eGFR is below 60 mL/min'
+],
+correct: 1,
+explanation: 'Beta-blocker initiation and titration should be deferred until HF is compensated/euvolemic. Do not start during acute decompensation.'
+},
+{
+question: 'What is the recommended management for HFimpEF (previously ≤40%, now >40%)?',
+options: [
+'Stop all GDMT',
+'Continue the GDMT originally indicated for HFrEF indefinitely',
+'Reduce to SGLT2i only',
+'Switch to HFpEF treatment regimen'
+],
+correct: 1,
+explanation: 'Continue the GDMT originally indicated for HFrEF even after EF recovers (Class 1, LOE B-R). Withdrawal risks relapse — TRED-HF showed 44% relapse within 6 months.'
+},
+{
+question: 'In the MRA monitoring for HFrEF, when should spironolactone/eplerenone be avoided?',
+options: [
+'eGFR ≤60 mL/min',
+'eGFR ≤30 mL/min',
+'Potassium >4.0 mEq/L',
+'Systolic BP <120 mmHg'
+],
+correct: 1,
+explanation: 'Avoid MRA if eGFR ≤30 mL/min, and discontinue if potassium cannot be kept <5.5 mEq/L.'
+}
+];
+
+let quizState = {
+answered: 0,
+correct: 0,
+responses: []
+};
+
+function renderQuiz() {
+const container = document.getElementById('quizContainer');
+container.innerHTML = quizData.map((q, i) => `
+<div class="card quiz-question" id="q-${i}">
+<p><strong>Q${i + 1}.</strong> ${q.question}</p>
+${q.options.map((opt, j) => `
+<div class="quiz-option" data-q="${i}" data-o="${j}" onclick="selectAnswer(${i}, ${j})">
+${String.fromCharCode(65 + j)}. ${opt}
+</div>
+`).join('')}
+<div class="quiz-feedback" id="fb-${i}"></div>
+</div>
+`).join('');
+}
+
+function selectAnswer(qIndex, oIndex) {
+if (quizState.responses[qIndex] !== undefined) return; // Already answered
+
+const q = quizData[qIndex];
+const isCorrect = oIndex === q.correct;
+quizState.responses[qIndex] = { selected: oIndex, correct: isCorrect };
+quizState.answered++;
+if (isCorrect) quizState.correct++;
+
+// Update UI
+const questionEl = document.getElementById(`q-${qIndex}`);
+const options = questionEl.querySelectorAll('.quiz-option');
+options.forEach((opt, j) => {
+opt.classList.add('disabled');
+opt.style.pointerEvents = 'none';
+if (j === q.correct) opt.classList.add('correct');
+if (j === oIndex && !isCorrect) opt.classList.add('incorrect');
+});
+
+const fb = document.getElementById(`fb-${qIndex}`);
+fb.className = 'quiz-feedback show ' + (isCorrect ? 'correct' : 'incorrect');
+fb.innerHTML = isCorrect
+? `✅ <strong>Correct!</strong> ${q.explanation}`
+: `❌ <strong>Incorrect.</strong> The correct answer is <strong>${String.fromCharCode(65 + q.correct)}</strong>. ${q.explanation}`;
+
+updateProgress();
+
+if (quizState.answered === quizData.length) {
+showResults();
+}
+}
+
+function updateProgress() {
+const pct = (quizState.answered / quizData.length) * 100;
+document.getElementById('quizProgress').style.width = pct + '%';
+document.getElementById('quizProgressText').textContent =
+`${quizState.answered} / ${quizData.length} questions answered`;
+}
+
+function showResults() {
+const resultEl = document.getElementById('quizResult');
+resultEl.style.display = 'block';
+document.getElementById('finalScore').textContent =
+`${quizState.correct} / ${quizData.length}`;
+const pct = (quizState.correct / quizData.length) * 100;
+let msg = '';
+if (pct === 100) msg = '🏆 Perfect score! You have mastered HF GDMT.';
+else if (pct >= 80) msg = '🎉 Excellent! Strong understanding of HF management.';
+else if (pct >= 60) msg = '👍 Good effort. Review the sections you missed.';
+else msg = '📚 Keep studying! Review the guideline sections and try again.';
+document.getElementById('scoreMessage').textContent = msg;
+resultEl.scrollIntoView({ behavior: 'smooth' });
+}
+
+function resetQuiz() {
+quizState = { answered: 0, correct: 0, responses: [] };
+document.getElementById('quizResult').style.display = 'none';
+document.getElementById('quizProgress').style.width = '0%';
+document.getElementById('quizProgressText').textContent = '0 / 10 questions answered';
+renderQuiz();
+document.querySelector('#quiz .card').scrollIntoView({ behavior: 'smooth' });
+}
+
+// Initialize quiz
+renderQuiz();
+
+// ==================== COLLAPSIBLE SECTIONS ====================
+document.querySelectorAll('.collapsible').forEach(el => {
+el.addEventListener('click', () => {
+el.classList.toggle('open');
+const content = el.nextElementSibling;
+if (content) content.classList.toggle('open');
+});
+});
+</script>
+</body>
+</html>
+
